@@ -111,9 +111,6 @@ export default function DateRangePicker({
           <p>캘린더에서 날짜를 선택하거나 위 버튼을 눌러주세요</p>
         )}
       </div>
-
-      <input type="hidden" name="startDate" value={startDate} required />
-      <input type="hidden" name="endDate" value={endDate} required />
     </div>
   )
 }

@@ -587,10 +587,10 @@ layers 4~6개, timeGuide 2~3개, localTips 3~4개, essentials 3~5개.`,
 }
 
 export async function createTravelPlan(input: TripInput, env: PlanEnv): Promise<PlanResult> {
-  const openAiKey = env.OPENAI_API_KEY
+  const openAiKey = env.OPENAI_API_KEY?.trim()
 
-  if (!openAiKey) {
-    throw new Error('OPENAI_API_KEY가 설정되지 않았습니다.')
+  if (!openAiKey || openAiKey === 'your_openai_api_key') {
+    throw new Error('OPENAI_API_KEY가 설정되지 않았습니다. Vercel Environment Variables를 확인해주세요.')
   }
 
   const { city, startDate, endDate } = input
@@ -599,7 +599,12 @@ export async function createTravelPlan(input: TripInput, env: PlanEnv): Promise<
     throw new Error('여행지, 출발일, 도착일을 모두 입력해주세요.')
   }
 
-  const weather = await getWeather(city.trim(), startDate, endDate, env.OPENWEATHER_API_KEY)
+  const weather = await getWeather(
+    city.trim(),
+    startDate,
+    endDate,
+    env.OPENWEATHER_API_KEY?.trim() || undefined,
+  )
   const recommendation = await getRecommendation(weather, { startDate, endDate }, openAiKey)
 
   return { weather, recommendation }
