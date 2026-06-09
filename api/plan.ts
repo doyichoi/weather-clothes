@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { createTravelPlan } from '../lib/plan-service'
+import { createTravelPlan } from './lib/plan-service'
 
 function parseBody(req: VercelRequest): {
   city?: string

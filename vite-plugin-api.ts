@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
 import { loadEnv } from 'vite'
-import { createTravelPlan } from './lib/plan-service'
+import { createTravelPlan } from './api/lib/plan-service'
 
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -29,6 +29,16 @@ export function apiPlugin(): Plugin {
       server.middlewares.use(async (req, res, next) => {
         if (req.url !== '/api/plan') {
           return next()
+        }
+
+        if (req.method === 'GET') {
+          const hasKey = Boolean(env.OPENAI_API_KEY?.trim())
+          sendJson(res, 200, {
+            ok: true,
+            openaiConfigured: hasKey,
+            message: hasKey ? 'API ready' : 'OPENAI_API_KEY not configured',
+          })
+          return
         }
 
         if (req.method !== 'POST') {
